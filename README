@@ -1,0 +1,19 @@
+Vistaprint Project
+Goal: Recommendation system for customers based on their
+previous engagements with Vistaprint. The goal is to create an improved 
+relevant and personalized experience for customers. 
+Paths to follow:
+These questions act as guidelines as to how we can create a system
+that is able to forecast the users needs, therbey creating a more
+personalized experience- 
+- How does the customer interact with the product?
+- What features are indicative of what a customer would interact with?
+  (user features)
+- What design traits or features are more popular than others?
+  (design features)
+- Combine user features(purchase patterns, etc.), design features,
+  and interaction features to gain insight to personalizing the user
+  experience. 
+
+These questions aid us in the design of this customer recommendation
+system for Vistaprint.  
