@@ -7,6 +7,8 @@ Use a.empty, a.bool(), a.item(), a.any() or a.all().
 """
 from sklearn.feature_selection import RFECV
 from sklearn import linear_model, preprocessing
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
 import warnings
 import pyarrow.parquet as pq
 import pandas as pd
@@ -51,9 +53,25 @@ X = data.iloc[0:100000, [0,1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,21,22
 y = data.iloc[0:100000,[15]]
 
 
-"""Model and recursive feature elimination"""
+"""Model and recursive feature elimination
 model = linear_model.LinearRegression()
 rfecv = RFECV(estimator=model, step=1, scoring='neg_mean_squared_error')
-#rfecv.fit(X, y)
-scaler = StandardScaler()
-X_std = scaler.fit_transform(X)
+rfecv.fit(X, y)
+rfecv.transform(X)
+rfecv.n_features_
+rfecv.poof()"""
+"""Split data into training and test"""
+X_train, X_test, y_train, y_test = train_test_split(X, 
+                                                    y, 
+                                                    test_size=0.3, 
+                                                    random_state=1)
+"""Standardize features apply to both training and test"""
+standardizer = StandardScaler()
+standardizer.fit(X_train)
+X_train_std = standardizer.transform(X_train)
+X_test_std = standardizer.transform(X_test)
+
+"""Create logistic regression object using sag solver"""
+clf = LogisticRegression(random_state=0, solver='sag')
+"""Logistic regression model"""
+model = clf.fit(X_std, y)
