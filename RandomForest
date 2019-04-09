@@ -1,15 +1,22 @@
+"""
+Importing the dataset
+"""
+
 from sklearn.feature_selection import RFECV
 from sklearn import linear_model, preprocessing
-from sklearn.linear_model import LogisticRegression
 import warnings
 import pyarrow.parquet as pq
 import pandas as pd
 import fastparquet
 import numpy as np
+import snappy
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
 
 """Suppress a warning and init label encoder"""
 warnings.filterwarnings(action="ignore", module="scipy", message="^internal gelsd")
 label_encode = preprocessing.LabelEncoder()
+
 
 """Load dataset"""
 data = pd.read_parquet("dataset.parquet", engine='fastparquet')
@@ -23,20 +30,30 @@ data = data.iloc[ 0:100000 , : ]
 values in a column"""
 missing_dict = {}
 for ele in data.columns:
-    missing_dict.update({ele: 0}) #Declare 0 for all missing elements in every column
-    
+   missing_dict.update({ele: 0}) #Declare 0 for all missing elements in every column
+
 for row in range(0, len(data)):
-    for ele in data.columns:
-        if data.at[row, ele] == '':
-            missing_dict[ele] += 1;
-        
+   for ele in data.columns:
+       if data.at[row, ele] == '':
+           missing_dict[ele] += 1;
+
 """Label encode columns with strings"""
-for ele in data.columns: 
-    for row in range(0, len(data)):
-        if type(data.at[row, ele]) == str:
-            label_encode.fit(data[ele])
-            data[ele] = label_encode.transform(data[ele])
-            break
+for ele in data.columns:
+   for row in range(0, len(data)):
+       if type(data.at[row, ele]) == str:
+           label_encode.fit(data[ele])
+           data[ele] = label_encode.transform(data[ele])
+           break
+data.drop(["GeoCountry", "GeoRegion", "GeoPostalCode", "SessionId", "VisitorId", "PageSection", "PageStage", "ActualDeviceUIType", "CouponCode", "OperatingSystem"], axis = 1, inplace = True)
+
+from surprise import Reader, Dataset
+#pca = PCA(tol = 0.9)
+#X = data;
+#data = StandardScaler().fit_transform(X)
+#pca.fit(data)
+"""Feature matrix and target vector"""
+#X = data.iloc[0:100000, [0,1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17]]
+#y = data.iloc[0:100000,[15]]
 
 X = data.iloc[:, [8, 16]].values
 y = data.iloc[:, 4].values
